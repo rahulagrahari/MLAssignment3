@@ -77,6 +77,12 @@ gbmTreePerformance = precision_recall_fscore_support(y_test, gbmTree.predict(X_t
 supportVectorPerformance = precision_recall_fscore_support(y_test, supportVector.predict(X_test))
 
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 
+
+# cross validation
+
+clf = SVC(kernel='poly', random_state=0, probability=True)
+scores = cross_val_score(clf, X, np.squeeze(y), cv=10)
 
