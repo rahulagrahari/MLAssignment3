@@ -43,13 +43,23 @@ accuracy_score(y_test, clf.support_vector().predict(X_test))
 
 # performance evaluator
 
-simpleTreePerformance = precision_recall_fscore_support(y_test, simpleTree.predict(X_test))
-
-rfTreePerformance = precision_recall_fscore_support(y_test, rfTree.predict(X_test))
-
-gbmTreePerformance = precision_recall_fscore_support(y_test, gbmTree.predict(X_test))
-
-supportVectorPerformance = precision_recall_fscore_support(y_test, supportVector.predict(X_test))
-
 # ----------------------------------------------------------------------------------------------------------------------
+kf = KFold(n_splits=1)
+print kf
+score = 0
+import numpy as np
+dataset = np.array(dataset)
+X = np.array(X)
+y = np.array(y)
+for train_indices, test_indices in kf.split(dataset):
+    x_train = [X[i] for i in train_indices]
+    x_test = [X[i] for i in test_indices]
+    y_train = [y[i] for i in train_indices]
+    y_test = [y[i] for i in test_indices]
+    clf = classifier(x_train, y_train)
+    score += accuracy_score(y_test, clf.gradient_boosting().predict(x_test))
 
+from performanceEval import evalMetric
+
+eval = evalMetric(2,dataset,"randomforest",X,y)
+eval.k_fold_cross_validation()
