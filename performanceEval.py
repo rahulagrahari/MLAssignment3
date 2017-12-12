@@ -1,6 +1,6 @@
 class evalMetric:
 
-    def __init__(self, n_split, dataset, classifier, X, y):
+    def __init__(self, n_split=2, dataset=None, classifier=None, X=None, y=None):
         self.n_split = n_split
         self.dataset = dataset
         self.classifier = classifier
@@ -24,9 +24,17 @@ class evalMetric:
             y_train = [y[i] for i in train_indices]
             y_test = [y[i] for i in test_indices]
             clf = classifier(x_train, y_train)
-            dict = {"svm": clf.support_vector(), "randomforest": clf.random_forest(),
-                    "decisiontree": clf.decision_tree(),
-                    "gradientboosting": clf.gradient_boosting()}
-            score += accuracy_score(y_test, dict[self.classifier].predict(x_test))
-
+            if self.classifier == "randomforest":
+                predict = clf.random_forest().predict(x_test)
+            elif self.classifier == "svm":
+                predict = clf.support_vector().predict(x_test)
+            elif self.classifier == "gradientboosting":
+                predict = clf.gradient_boosting().predict(x_test)
+            elif self.classifier == "decisiontree":
+                predict = clf.decision_tree().predict(x_test)
+            score += accuracy_score(y_test, predict)
+            print("Score: ", score)
+        print("Average Score: ", score / self.n_split)
         return score / self.n_split
+
+
