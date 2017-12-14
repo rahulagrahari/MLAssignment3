@@ -1,4 +1,4 @@
-from sklearn.metrics import precision_recall_fscore_support, accuracy_score, confusion_matrix, roc_auc_score, f1_score
+from sklearn.metrics import precision_recall_fscore_support, accuracy_score, confusion_matrix, roc_auc_score, f1_score, roc_curve
 class evalMetric:
 
     def __init__(self, y_test=None, y_pred=None):
@@ -21,5 +21,6 @@ class evalMetric:
     def F1_score(self):
         return f1_score(self.y_test, self.y_pred)
 
-
+    def roc(self):
+        return roc_auc_score(self.y_test, self.y_pred)
 
