@@ -20,6 +20,7 @@ class training:
         y = np.array(self.y)
         dataset = np.array(self.dataset)
         score = 0
+        feature_imp = 0
         for train_indices, test_indices in kf.split(dataset):
             x_train = X[train_indices]
             x_test = X[test_indices]
@@ -27,22 +28,27 @@ class training:
             y_test = y[test_indices]
             clf = classifier(x_train, y_train)
             if classifierName == "randomforest":
-                predict = clf.random_forest().predict(x_test)
+                c = clf.random_forest()
+                predict = c.predict(x_test)
             elif classifierName == "svm":
-                predict = clf.support_vector().predict(x_test)
+                c = clf.support_vector()
+                predict = c.predict(x_test)
             elif classifierName == "gradientboosting":
-                predict = clf.gradient_boosting().predict(x_test)
+                c = clf.gradient_boosting()
+                predict = c.predict(x_test)
             elif classifierName == "decisiontree":
-                predict = clf.decision_tree().predict(x_test)
+                c = clf.decision_tree()
+                predict = c.predict(x_test)
             elif classifierName == "linearsvm":
-                predict = clf.linear_support_vector().predict(x_test)
+                c = clf.linear_support_vector()
+                predict = c.predict(x_test)
 
-            score += evalMetric(y_test,predict).precision_recall_fscore_supports()[2]
-
+            score += evalMetric(y_test, predict).precision_recall_fscore_supports()[2]
+            feature_imp += c.feature_importances_
             # print("Score: ", score)
 
         print("Average Score: ", score / n_split)
-        return score / n_split
+        return score / n_split, feature_imp / n_split
 
     def normal_training(self, classifierName=None, featureScaling = False, test_size=0.2):
 
