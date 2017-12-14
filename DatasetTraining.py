@@ -42,9 +42,19 @@ class training:
             elif classifierName == "linearsvm":
                 c = clf.linear_support_vector()
                 predict = c.predict(x_test)
+            elif classifierName == "logistic":
+                c = clf.logistic()
+                predict = c.predict(x_test)
+            elif classifierName == "knn":
+                c = clf.KNN()
+                predict = c.predict(x_test)
+            elif classifierName == "sgd":
+                c = clf.sgd()
+                predict = c.predict(x_test)
 
-            score += evalMetric(y_test, predict).precision_recall_fscore_supports()[2]
-            feature_imp += c.feature_importances_
+            score += evalMetric(y_test, predict).accuracy_skore()
+            if not classifierName == 'knn':
+                feature_imp += c.feature_importances_
             # print("Score: ", score)
 
         print("Average Score: ", score / n_split)
@@ -63,7 +73,7 @@ class training:
             X_test = sc_X.transform(X_test)
         clf = classifier(X_train, y_train)
         if classifierName == "randomforest":
-            trainedClassifier = clf.random_forest()
+            trainedClassifier, x_f = clf.random_forest()
             y_pred = trainedClassifier.predict(X_test)
         elif classifierName == "svm":
             trainedClassifier = clf.support_vector()
@@ -72,13 +82,24 @@ class training:
             trainedClassifier = clf.gradient_boosting()
             y_pred = trainedClassifier.predict(X_test)
         elif classifierName == "decisiontree":
-            trainedClassifier = clf.decision_tree()
+            trainedClassifier, x_f = clf.decision_tree()
             y_pred = trainedClassifier.predict(X_test)
         elif classifierName == "linearsvm":
             trainedClassifier = clf.linear_support_vector()
             y_pred = trainedClassifier.predict(X_test)
+        elif classifierName == "logistic":
+            trainedClassifier = clf.logistic()
+            y_pred = trainedClassifier.predict(X_test)
+        elif classifierName == "knn":
+            trainedClassifier = clf.KNN()
+            y_pred = trainedClassifier.predict(X_test)
+        elif classifierName == "sgd":
+            trainedClassifier = clf.sgd()
+            y_pred = trainedClassifier.predict(X_test)
+        else:
+            print "classifier not found"
         dict = {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test, "trainedmodel": trainedClassifier,
-                "y_pred": y_pred}
+                "y_pred": y_pred, "x_f":x_f}
 
         return dict
 
