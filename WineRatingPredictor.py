@@ -51,13 +51,19 @@ plt.title('Distribution of wine ratings')
 plt.show()
 
 # -----------------------performance evaluator----------------------------------------------------------------
-clff = training.normal_training("gradientboosting", True, 0.3)
+clff = training.normal_training("randomforest", True, 0.3)
+eval = evalMetric(clff['y_test'], clff['y_pred'])
+eval.precision_recall_fscore_supports()
 print clff['trainedmodel'].feature_importances_
-
+clf = training.k_fold_cross_validation(10, 'randomforest')
+score , fimp = clf
+print sum(fimp)
 
 fig, ax = plt.subplots()
 ax.scatter(clff['y_test'], clff['y_pred'], edgecolors=(0, 0, 0))
 ax.plot([clff['y_test'].min(), clff['y_test'].max()], [clff['y_test'].min(), clff['y_test'].max()], 'k--', lw=4)
+plt.plot(clff['y_test'], clff['y_pred'], color='blue', linewidth=1)
+# plt.plot(clff['X_test'], clff['y_test'], color='yellow', linewidth=0.25)
 plt.show()
 
 
