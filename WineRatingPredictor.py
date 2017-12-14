@@ -19,29 +19,37 @@ cnfg = configure(datasetName)
 #
 # returns the whole dataset with updated binary values of 0 and 1
 
-# dataset = cnfg.binaryClassConversion('quality')
+dataset = cnfg.binaryClassConversion('quality')
 
-dataset = cnfg.getdataset()
+# dataset = cnfg.getdataset()
 
 X = dataset[['fixed acidity', 'volatile acidity', 'citric acid', 'residual sugar','chlorides', 'free sulfur dioxide',
              'total sulfur dioxide', 'density', 'pH', 'sulphates', 'alcohol']]
-y = dataset['quality']
+y = dataset['taste']
 
 
-classifierList = [ "gradientboosting", "randomforest", "decisiontree", "linearsvm"]
+classifierList = ["knn", "randomforest", "decisiontree", "logistic"]
 
 training = training(dataset, X, y)
 
-for cl in classifierList:
-    clf = training.normal_training(cl, True, 0.3)
-    eval = evalMetric(clf['y_test'], clf['y_pred'])
-    print "accuracy_Score for ", cl, ": ", eval.accuracy_skore()
-    print "confusion_metric for ", cl, ": \n", eval.confusion_metric()
-    print "precision_recall_fscore_supports for ", cl, ": ", eval.precision_recall_fscore_supports()[2]
-    # print "area_under_the_curve ", cl, ": ", eval.area_under_the_curve()
+# clf = training.normal_training(classifierList[2], True, 0.3)
+# print clf['x_f']
+# eval = evalMetric(clf['y_test'], clf['y_pred'])
+# print "accuracy_Score for ", classifierList[2], ": ", eval.accuracy_skore()
+# print clf['y_pred']
 
+# for cl in classifierList:
+#     clf = training.normal_training(cl, True, 0.3)
+#     eval = evalMetric(clf['y_test'], clf['y_pred'])
+#     print "accuracy_Score for ", cl, ": ", eval.accuracy_skore()
+#     print "confusion_metric for ", cl, ": \n", eval.confusion_metric()
+#     print "precision_recall_fscore_supports for ", cl, ": ", eval.precision_recall_fscore_supports()[2]
+#     # print "area_under_the_curve ", cl, ": ", eval.area_under_the_curve()
+
+# --------------------K-Fold training -------------------
 for cl in classifierList:
     clf = training.k_fold_cross_validation(10, cl)
+    # clf['trainedmodel'].feature_importances_
 
 # -------------------------------------rating distribution graph ----------------------------------------
 plt.hist(dataset['quality'], range=(1, 10))
@@ -50,20 +58,23 @@ plt.ylabel('Amount')
 plt.title('Distribution of wine ratings')
 plt.show()
 
+
+
+
 # -----------------------performance evaluator----------------------------------------------------------------
-clff = training.normal_training("randomforest", True, 0.3)
-eval = evalMetric(clff['y_test'], clff['y_pred'])
-eval.precision_recall_fscore_supports()
-print clff['trainedmodel'].feature_importances_
-clf = training.k_fold_cross_validation(10, 'randomforest')
-score , fimp = clf
-print sum(fimp)
-
-fig, ax = plt.subplots()
-ax.scatter(clff['y_test'], clff['y_pred'], edgecolors=(0, 0, 0))
-ax.plot([clff['y_test'].min(), clff['y_test'].max()], [clff['y_test'].min(), clff['y_test'].max()], 'k--', lw=4)
-plt.plot(clff['y_test'], clff['y_pred'], color='blue', linewidth=1)
-# plt.plot(clff['X_test'], clff['y_test'], color='yellow', linewidth=0.25)
-plt.show()
-
+# clff = training.normal_training("randomforest", True, 0.3)
+# eval = evalMetric(clff['y_test'], clff['y_pred'])
+# eval.precision_recall_fscore_supports()
+# print clff['trainedmodel'].feature_importances_
+# clf = training.k_fold_cross_validation(10, 'randomforest')
+# score , fimp = clf
+# print sum(fimp)
+#
+# fig, ax = plt.subplots()
+# ax.scatter(clff['y_test'], clff['y_pred'], edgecolors=(0, 0, 0))
+# ax.plot([clff['y_test'].min(), clff['y_test'].max()], [clff['y_test'].min(), clff['y_test'].max()], 'k--', lw=4)
+# plt.plot(clff['y_test'], clff['y_pred'], color='blue', linewidth=1)
+# # plt.plot(clff['X_test'], clff['y_test'], color='yellow', linewidth=0.25)
+# plt.show()
+#
 
