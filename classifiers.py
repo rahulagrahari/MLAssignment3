@@ -21,5 +21,11 @@ class classifier:
 
     def support_vector(self):
         from sklearn.svm import SVC
-        supportVector = SVC(kernel='poly', random_state=0, probability=True)
+        supportVector = SVC(kernel='linear', random_state=0, probability=True)
         return supportVector.fit(self.X, self.y)
+
+    def linear_support_vector(self):
+        from sklearn.svm import LinearSVC
+        supportVector = LinearSVC(random_state=0)
+        return supportVector.fit(self.X, self.y)
+

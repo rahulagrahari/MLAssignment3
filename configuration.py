@@ -12,12 +12,12 @@ class configure:
 
     def getdataset(self):
         import pandas as pd
-        dataset = pd.read_csv('winequality-' + self.datasetName + '.csv', ';')
+        dataset = pd.read_csv(self.datasetName, ';')
         return dataset
 
-    def binaryClassConversion(self):
+    def binaryClassConversion(self, featureName):
 
         dataset = self.getdataset()
 
-        dataset['taste'] = dataset['quality'].apply(isTasty)
+        dataset['taste'] = dataset[featureName].apply(isTasty)
         return dataset

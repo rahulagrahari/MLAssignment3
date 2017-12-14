@@ -1,39 +1,63 @@
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from configuration import configure
-from classifiers import classifier
-from performanceEval import evalMetric
+from DatasetTraining import training
+from matplotlib import pyplot as plt
+from evalMetrics import evalMetric
+
 
 # importing the dataset and pre-procesing it
-datasetName = input("which data set: please type red or white")
+
+datasetName = 'winequality-white.csv'
+
+
+# configure constructor takes
+#
+# datasetName as parameter
+
 cnfg = configure(datasetName)
-dataset = cnfg.binaryClassConversion()
+
+# binaryClassConversion takes featureName to convert the feature value in two classes: 0 and 1
+#
+# returns the whole dataset with updated binary values of 0 and 1
+
+# dataset = cnfg.binaryClassConversion('quality')
+
+dataset = cnfg.getdataset()
+
 X = dataset[['fixed acidity', 'volatile acidity', 'citric acid', 'residual sugar','chlorides', 'free sulfur dioxide',
              'total sulfur dioxide', 'density', 'pH', 'sulphates', 'alcohol']]
-y = dataset['taste']
-
-# splitting into training and test dataset
+y = dataset['quality']
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
-# [subset.shape for subset in [X_train, X_test, y_train, y_test]]
+classifierList = [ "gradientboosting", "randomforest", "decisiontree", "linearsvm"]
 
-# feature scaling
-sc_X = StandardScaler()
-X_train = sc_X.fit_transform(X_train)
-X_test = sc_X.transform(X_test)
+training = training(dataset, X, y)
+
+for cl in classifierList:
+    clf = training.normal_training(cl, True, 0.3)
+    eval = evalMetric(clf['y_test'], clf['y_pred'])
+    print "accuracy_Score for ", cl, ": ", eval.accuracy_skore()
+    print "confusion_metric for ", cl, ": \n", eval.confusion_metric()
+    print "precision_recall_fscore_supports for ", cl, ": ", eval.precision_recall_fscore_supports()[2]
+    # print "area_under_the_curve ", cl, ": ", eval.area_under_the_curve()
+
+for cl in classifierList:
+    clf = training.k_fold_cross_validation(10, cl)
+
+# -------------------------------------rating distribution graph ----------------------------------------
+plt.hist(dataset['quality'], range=(1, 10))
+plt.xlabel('Ratings of wines')
+plt.ylabel('Amount')
+plt.title('Distribution of wine ratings')
+plt.show()
 
 # -----------------------performance evaluator----------------------------------------------------------------
-classifierList = ["svm", "gradientboosting", "randomforest", "decisiontree" ]
-eval1 = evalMetric(10, dataset, classifierList[0], X, y)
-eval1.k_fold_cross_validation()
-eval2 = evalMetric(10, dataset, classifierList[1], X, y)
-eval2.k_fold_cross_validation()
-eval3 = evalMetric(10, dataset, classifierList[2], X, y)
-eval3.k_fold_cross_validation()
-eval4 = evalMetric(10, dataset, classifierList[3], X, y)
-eval4.k_fold_cross_validation()
+clff = training.normal_training("gradientboosting", True, 0.3)
+print clff['trainedmodel'].feature_importances_
 
 
+fig, ax = plt.subplots()
+ax.scatter(clff['y_test'], clff['y_pred'], edgecolors=(0, 0, 0))
+ax.plot([clff['y_test'].min(), clff['y_test'].max()], [clff['y_test'].min(), clff['y_test'].max()], 'k--', lw=4)
+plt.show()
 
 
