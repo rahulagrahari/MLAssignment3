@@ -7,7 +7,7 @@ class evalMetric:
         self.y_pred = y_pred
 
     def precision_recall_fscore_supports(self):
-        return precision_recall_fscore_support(self.y_test, self.y_pred, average='weighted')
+        return precision_recall_fscore_support(self.y_test, self.y_pred, average='macro')
 
     def confusion_metric(self):
         return confusion_matrix(self.y_test, self.y_pred)
@@ -19,7 +19,7 @@ class evalMetric:
         return accuracy_score(self.y_test, self.y_pred)
 
     def F1_score(self):
-        return f1_score(self.y_test, self.y_pred)
+        return f1_score(self.y_test, self.y_pred, average='macro')
 
     def roc(self):
         return roc_auc_score(self.y_test, self.y_pred)

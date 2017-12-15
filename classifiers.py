@@ -7,15 +7,15 @@ class classifier:
 
 
 
-    def decision_tree(self):
+    def decision_tree(self, n):
         from sklearn.tree import DecisionTreeClassifier
-        simpleTree = DecisionTreeClassifier(max_depth=5)
-        return simpleTree.fit(self.X, self.y), RFE(simpleTree, 3).fit(self.X, self.y).transform(self.X)
+        simpleTree = DecisionTreeClassifier(max_depth=9)
+        return simpleTree.fit(self.X, self.y)
 
     def random_forest(self):
         from sklearn.ensemble import RandomForestClassifier
         simpleTree = RandomForestClassifier(max_depth=5)
-        return simpleTree.fit(self.X, self.y), RFE(simpleTree, 3).fit(self.X, self.y).transform(self.X)
+        return simpleTree.fit(self.X, self.y)
 
     def gradient_boosting(self):
         from sklearn.ensemble import GradientBoostingClassifier
@@ -34,12 +34,12 @@ class classifier:
 
     def logistic(self):
         from sklearn.linear_model import LogisticRegression
-        linear = LogisticRegression(multi_class='multinomial', solver='saga', max_iter=500)
+        linear = LogisticRegression(multi_class='multinomial', solver='newton-cg', max_iter=1000)
         return linear.fit(self.X, self.y)
 
-    def KNN(self):
+    def KNN(self, n):
         from sklearn.neighbors import KNeighborsClassifier
-        knn = KNeighborsClassifier(5)
+        knn = KNeighborsClassifier(3)
         return knn.fit(self.X, self.y)
 
     def sgd(self):
