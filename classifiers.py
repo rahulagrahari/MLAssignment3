@@ -5,8 +5,6 @@ class classifier:
         self.X = X
         self.y = y
 
-
-
     def decision_tree(self, n):
         from sklearn.tree import DecisionTreeClassifier
         simpleTree = DecisionTreeClassifier(max_depth=9)
