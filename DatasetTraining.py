@@ -9,7 +9,7 @@ class training:
         self.X = X
         self.y = y
 
-    def k_fold_cross_validation(self, n_split=2, classifierName=None):
+    def k_fold_cross_validation(self, n_split=2, classifierName=None, n=0):
 
         from sklearn.model_selection import KFold
         import numpy as np
@@ -21,6 +21,10 @@ class training:
         dataset = np.array(self.dataset)
         score = 0
         feature_imp = 0
+        scores = []
+        scores1 = []
+        score1 = []
+        score2 = []
         for train_indices, test_indices in kf.split(dataset):
             x_train = X[train_indices]
             x_test = X[test_indices]
@@ -37,7 +41,7 @@ class training:
                 c = clf.gradient_boosting()
                 predict = c.predict(x_test)
             elif classifierName == "decisiontree":
-                c = clf.decision_tree()
+                c = clf.decision_tree(n)
                 predict = c.predict(x_test)
             elif classifierName == "linearsvm":
                 c = clf.linear_support_vector()
@@ -46,19 +50,27 @@ class training:
                 c = clf.logistic()
                 predict = c.predict(x_test)
             elif classifierName == "knn":
-                c = clf.KNN()
+                c = clf.KNN(n)
                 predict = c.predict(x_test)
             elif classifierName == "sgd":
                 c = clf.sgd()
                 predict = c.predict(x_test)
 
-            score += evalMetric(y_test, predict).accuracy_skore()
-            if not classifierName == 'knn':
+            e1 = evalMetric(y_test, predict).F1_score()
+            score1.append(e1)
+            e = evalMetric(y_test, predict).accuracy_skore()
+            score2.append(e)
+            # scores1.append([[e], [e1]])
+            score += e1
+
+            if classifierName == 'randomforest':
                 feature_imp += c.feature_importances_
             # print("Score: ", score)
 
         print("Average Score: ", score / n_split)
-        return score / n_split, feature_imp / n_split
+        scores.append(score1)
+        scores.append(score2)
+        return score / n_split, feature_imp / n_split, scores
 
     def normal_training(self, classifierName=None, featureScaling = False, test_size=0.2):
 
@@ -75,27 +87,35 @@ class training:
         if classifierName == "randomforest":
             trainedClassifier, x_f = clf.random_forest()
             y_pred = trainedClassifier.predict(X_test)
+
         elif classifierName == "svm":
             trainedClassifier = clf.support_vector()
             y_pred = trainedClassifier.predict(X_test)
+
         elif classifierName == "gradientboosting":
             trainedClassifier = clf.gradient_boosting()
             y_pred = trainedClassifier.predict(X_test)
+
         elif classifierName == "decisiontree":
             trainedClassifier, x_f = clf.decision_tree()
             y_pred = trainedClassifier.predict(X_test)
+
         elif classifierName == "linearsvm":
             trainedClassifier = clf.linear_support_vector()
             y_pred = trainedClassifier.predict(X_test)
+
         elif classifierName == "logistic":
             trainedClassifier = clf.logistic()
             y_pred = trainedClassifier.predict(X_test)
+
         elif classifierName == "knn":
             trainedClassifier = clf.KNN()
             y_pred = trainedClassifier.predict(X_test)
+
         elif classifierName == "sgd":
             trainedClassifier = clf.sgd()
             y_pred = trainedClassifier.predict(X_test)
+
         else:
             print "classifier not found"
         dict = {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test, "trainedmodel": trainedClassifier,
