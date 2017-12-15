@@ -81,7 +81,9 @@ Bar chart demo with pairs of bars grouped for easy comparison.
 import numpy as np
 import matplotlib.pyplot as plt
 
-score, imp = training.k_fold_cross_validation(10, 'randomforest')
+
+
+score, imp, s1 = training.k_fold_cross_validation(10, 'randomforest')
 n_groups = len(imp)
 means_men = (imp)
 fig, ax = plt.subplots()
@@ -109,7 +111,7 @@ a = []
 b = []
 import numpy as np
 for i in range(1,6):
-    score, imp, g = training.k_fold_cross_validation(10, 'knn', i*3)
+    score, imp, s1 = training.k_fold_cross_validation(10, 'knn', i*3)
     a.append(i*3)
     b.append(score)
 plt.plot(a, b)
@@ -123,7 +125,7 @@ plt.show()
 a = []
 b = []
 for i in range(1,6):
-    score, imp, x = training.k_fold_cross_validation(10, 'decisiontree', i*3)
+    score, imp, s1 = training.k_fold_cross_validation(10, 'decisiontree', i*3)
     a.append(i*3)
     b.append(score)
 plt.plot(a, b)
@@ -134,9 +136,10 @@ plt.title('decision Tree')
 plt.show()
 
 # ---------------------------k-fold training map-------------------------------------
-plt.plot([i for i in range(1, 11)], scores[0], label='knn')
-plt.plot([i for i in range(1, 11)], scores[1], label='decision tree')
-plt.plot([i for i in range(1, 11)], scores[2], label='logistic')
+
+plt.plot([i for i in range(1, 11)], scores[0][0], label='knn')
+plt.plot([i for i in range(1, 11)], scores[1][0], label='decision tree')
+plt.plot([i for i in range(1, 11)], scores[2][0], label='logistic')
 plt.xlabel('splits')
 plt.ylabel('score')
 plt.title('K-fold training map')

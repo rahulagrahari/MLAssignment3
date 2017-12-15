@@ -60,7 +60,7 @@ class training:
             score1.append(e1)
             e = evalMetric(y_test, predict).accuracy_skore()
             score2.append(e)
-            # scores1.append([[e], [e1]])
+            # scores1.append(e1)
             score += e1
 
             if classifierName == 'randomforest':
@@ -117,7 +117,7 @@ class training:
             y_pred = trainedClassifier.predict(X_test)
 
         else:
-            print "classifier not found"
+            print ("classifier not found")
         dict = {"X_train": X_train, "X_test": X_test, "y_train": y_train, "y_test": y_test, "trainedmodel": trainedClassifier,
                 "y_pred": y_pred, "x_f":x_f}
 
